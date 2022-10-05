@@ -1,15 +1,36 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginPage extends StatefulWidget{
-  const LoginPage({Key? key}): super(key: key);
+  final VoidCallback mostrarRegisterPage;
+  const LoginPage({Key? key, required this.mostrarRegisterPage}): super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage>{
+
+  //Text controllers
+  final _emailcontroller = TextEditingController();
+  final _passwordcontroller = TextEditingController();
+
+  Future IniciarSesion() async{
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailcontroller.text.trim(),
+        password: _passwordcontroller.text.trim()
+    );
+  }
+
+  @override
+  void dispose() {
+    _emailcontroller.dispose();
+    _passwordcontroller.dispose();
+    super.dispose();
+  }
+
   final _styleBotones = ElevatedButton.styleFrom(
       primary: Color(0xff202f36),
       onPrimary: Colors.white,
@@ -17,6 +38,8 @@ class _LoginPageState extends State<LoginPage>{
       elevation: 10,
       shadowColor: Colors.black12
   );
+
+  bool _isVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -56,10 +79,11 @@ class _LoginPageState extends State<LoginPage>{
                           child: Padding(
                             padding: const EdgeInsets.only(left: 20),
                             child: TextField(
+                              controller: _emailcontroller,
                               keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
-                                hintText: 'Usuario',
+                                hintText: 'Email',
                                 hintStyle: TextStyle(color: Colors.grey[600]),
 
                               ),
@@ -73,6 +97,7 @@ class _LoginPageState extends State<LoginPage>{
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 25),
                         child: Container(
+                          alignment: Alignment.center,
                           decoration: BoxDecoration(
                               color: Colors.grey.shade300,
                               border: Border.all(color: Colors.white),
@@ -81,6 +106,7 @@ class _LoginPageState extends State<LoginPage>{
                           child: Padding(
                             padding: const EdgeInsets.only(left: 20),
                             child: TextField(
+                              controller: _passwordcontroller,
                               obscureText: true,
                               enableSuggestions: false,
                               autocorrect: false,
@@ -102,7 +128,7 @@ class _LoginPageState extends State<LoginPage>{
                         height: 50,
                         child: ElevatedButton(
                             onPressed: (){
-
+                              IniciarSesion();
                             },
                             style: _styleBotones,
                             child: Text('INICIAR SESIÓN',style: TextStyle(color: Colors.white),)),
@@ -114,7 +140,9 @@ class _LoginPageState extends State<LoginPage>{
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text('¿Aún no eres miembro?'),
-                          Text(' Registrate aquí',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.lightBlue),)
+                          GestureDetector(
+                            onTap: widget.mostrarRegisterPage,
+                              child: Text(' Registrate aquí',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.lightBlue)))
                         ],
                       )
                     ],
@@ -123,7 +151,6 @@ class _LoginPageState extends State<LoginPage>{
               ),
         )
         ),
-
     );
   }
 
