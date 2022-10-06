@@ -8,7 +8,7 @@ class Grupos extends StatelessWidget {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
-          backgroundColor: Colors.black,
+          backgroundColor: Color(0xff3a4d54),
           body: Center(
             child: Text("Estás en Grupos",style: TextStyle(color: Colors.white),),
           ),

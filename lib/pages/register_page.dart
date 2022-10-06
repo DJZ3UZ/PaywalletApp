@@ -33,8 +33,8 @@ class _RegisterPageState extends State<RegisterPage>{
           password: _passwordcontroller.text.trim(),
       );
     }else{
-      var snackBar = SnackBar(content: Text('Ingrese sus datos correctamente'),duration: Duration(seconds: 2),);
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      var snackBarIncorrecto = SnackBar(content: Text('Ingrese sus datos correctamente'),duration: Duration(seconds: 2),);
+      ScaffoldMessenger.of(context).showSnackBar(snackBarIncorrecto);
     }
   }
 
@@ -168,7 +168,12 @@ class _RegisterPageState extends State<RegisterPage>{
                       height: 50,
                       child: ElevatedButton(
                           onPressed: (){
-                            Registrarse();
+                            if(_passwordcontroller.text.length<4){
+                              var snackBarPassword = SnackBar(content: Text('Por favor, ingrese una contraseña de por lo menos 4 caracteres'),duration: Duration(seconds: 2),);
+                              ScaffoldMessenger.of(context).showSnackBar(snackBarPassword);
+                            }else{
+                              Registrarse();
+                            }
                           },
                           style: _styleBotones,
                           child: Text('REGISTRARSE',style: TextStyle(color: Colors.white),)),
@@ -176,18 +181,13 @@ class _RegisterPageState extends State<RegisterPage>{
                     SizedBox(height: 30),
 
                     //Volver
-                    GestureDetector(
-                      onTap: widget.mostrarLoginPage,
-                      child: Container(
-                        width: 200,
-                        height: 50,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: Color(0xff202f36),
-                            borderRadius: BorderRadius.circular(10)
-                        ),
-                        child: Text('VOLVER',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white))
-                      ),
+                    Container(
+                      width: 200,
+                      height: 50,
+                      child: ElevatedButton(
+                          onPressed: widget.mostrarLoginPage,
+                          style: _styleBotones,
+                          child: Text('VOLVER',style: TextStyle(color: Colors.white),)),
                     ),
                   ],
                 ),
@@ -195,7 +195,6 @@ class _RegisterPageState extends State<RegisterPage>{
             ),
           )
       ),
-
     );
   }
 }

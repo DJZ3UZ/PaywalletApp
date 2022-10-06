@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:paywallet_app/pages/pages.dart';
 
 class LoginPage extends StatefulWidget{
   final VoidCallback mostrarRegisterPage;
@@ -12,6 +13,7 @@ class LoginPage extends StatefulWidget{
 }
 
 class _LoginPageState extends State<LoginPage>{
+  bool _isVisible = true;
 
   //Text controllers
   final _emailcontroller = TextEditingController();
@@ -38,8 +40,6 @@ class _LoginPageState extends State<LoginPage>{
       elevation: 10,
       shadowColor: Colors.black12
   );
-
-  bool _isVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +107,7 @@ class _LoginPageState extends State<LoginPage>{
                             padding: const EdgeInsets.only(left: 20),
                             child: TextField(
                               controller: _passwordcontroller,
-                              obscureText: true,
+                              obscureText: _isVisible,
                               enableSuggestions: false,
                               autocorrect: false,
                               keyboardType: TextInputType.visiblePassword,
@@ -115,11 +115,43 @@ class _LoginPageState extends State<LoginPage>{
                                 border: InputBorder.none,
                                 hintText: 'Contraseña',
                                 hintStyle: TextStyle(color: Colors.grey[600]),
+                                suffixIcon: GestureDetector(
+                                  onTap: (){
+                                    setState(() {
+                                      _isVisible = !_isVisible;
+                                    });
+                                  },
+                                  child: Icon(_isVisible ? Icons.visibility_off_outlined : Icons.visibility_outlined,color: Colors.black54),
+                                )
                               ),
                               style: TextStyle(color: Colors.black),
                             ),
                           ),
                         ),
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 25),
+                            child: GestureDetector(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(
+                                    builder: (context){
+                                      return ForgotPasswordPage();
+                                })
+                                );
+                              },
+                                child: Text(
+                                    '¿Olvidaste tu contraseña?',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.lightBlue)
+                                )
+                            ),
+                          ),
+                        ],
                       ),
                       SizedBox(height: 30),
                       //Iniciar Sesión Button
@@ -128,7 +160,12 @@ class _LoginPageState extends State<LoginPage>{
                         height: 50,
                         child: ElevatedButton(
                             onPressed: (){
-                              IniciarSesion();
+                              if(_emailcontroller.text.characters.contains('@')){
+                                IniciarSesion();
+                              }else{
+                                var snackBarEmail = SnackBar(content: Text('Por favor, ingrese un correo válido'),duration: Duration(seconds: 2),);
+                                ScaffoldMessenger.of(context).showSnackBar(snackBarEmail);
+                              }
                             },
                             style: _styleBotones,
                             child: Text('INICIAR SESIÓN',style: TextStyle(color: Colors.white),)),
@@ -142,7 +179,13 @@ class _LoginPageState extends State<LoginPage>{
                           Text('¿Aún no eres miembro?'),
                           GestureDetector(
                             onTap: widget.mostrarRegisterPage,
-                              child: Text(' Registrate aquí',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.lightBlue)))
+                              child: Text(
+                                  ' Registrate aquí',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.lightBlue)
+                              )
+                          )
                         ],
                       )
                     ],

@@ -19,38 +19,53 @@ class Cuenta extends StatelessWidget {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
-          backgroundColor: Colors.black,
-          body: Center(
+          backgroundColor: Color(0xff3a4d54),
+          body: Container(
+            width: double.infinity,
+            height: double.infinity,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Container(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Color(0xff202f36),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: GestureDetector(
+                        onTap: (){
+                          showDialog(
+                              context: context,
+                              builder: (context)=> AlertDialog(
+                                backgroundColor: Color(0xff3a4d54),
+                                title: Text('¿Seguro que deseas cerrar sesión?',style: TextStyle(color: Colors.white,fontSize: 18),),
+                                actions: [
+                                  //Salir
+                                  TextButton(
+                                      onPressed: (){
+                                        FirebaseAuth.instance.signOut();
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text("Salir")),
+                                  //Cancelar
+                                  TextButton(
+                                      onPressed: (){
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text("Cancelar")),
+                                ],
+                              )
+                          );
+                        },
+                          child: Icon(Icons.logout,color: Colors.white,size: 28,)
+                      ),
+                    ),
+                  ),
+                ),
                 Text("Hola ${user.email} estás en tu cuenta",style: TextStyle(color: Colors.white),),
-                ElevatedButton(
-                  style: _styleBotones,
-                    onPressed: (){
-                    showDialog(
-                        context: context,
-                        builder: (context)=> AlertDialog(
-                          backgroundColor: Color(0xff3a4d54),
-                          title: Text('¿Seguro que deseas cerrar sesión?',style: TextStyle(color: Colors.white,fontSize: 18),),
-                          actions: [
-                            //Salir
-                            TextButton(
-                                onPressed: (){
-                                  FirebaseAuth.instance.signOut();
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text("Salir")),
-                            //Cancelar
-                            TextButton(
-                                onPressed: (){
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text("Cancelar")),
-                          ],
-                        ));
-                    },
-                    child: Text('CERRAR SESIÓN'))
               ],
             ),
           ),
