@@ -169,7 +169,7 @@ class _RegisterPageState extends State<RegisterPage>{
                       child: ElevatedButton(
                           onPressed: (){
                             if(_passwordcontroller.text.length<4){
-                              var snackBarPassword = SnackBar(content: Text('Por favor, ingrese una contraseña de por lo menos 4 caracteres'),duration: Duration(seconds: 2),);
+                              var snackBarPassword = SnackBar(content: Text('Por favor, ingrese una contraseña de por lo menos 6 caracteres'),duration: Duration(seconds: 2),);
                               ScaffoldMessenger.of(context).showSnackBar(snackBarPassword);
                             }else{
                               Registrarse();

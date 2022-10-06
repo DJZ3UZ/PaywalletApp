@@ -56,14 +56,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           context: context,
           builder: (context){
             return AlertDialog(
-              backgroundColor: Color(0xff3a4d54),
+              backgroundColor: const Color(0xff3a4d54),
               content: Text(e.message.toString(),style: TextStyle(color: Colors.white)),
               actions: [
                 TextButton(
                     onPressed: (){
                       Navigator.pop(context);
                       },
-                    child: Text("Ok"))
+                    child: const Text("Ok"))
               ],
             );
           }
