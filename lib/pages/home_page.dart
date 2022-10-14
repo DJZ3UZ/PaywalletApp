@@ -57,6 +57,7 @@ class _HomePageState extends State<HomePage>{
               index: index,
               items: items,
               onTap: (index) => setState(()=>this.index = index),
+              animationDuration: Duration(milliseconds: 350),
             )
         ),
       ),

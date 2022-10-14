@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,25 +18,48 @@ class _RegisterPageState extends State<RegisterPage>{
   final _emailcontroller = TextEditingController();
   final _passwordcontroller = TextEditingController();
   final _confirmarpasswordcontroller = TextEditingController();
+  final _nombrecontroller = TextEditingController();
+  final _apellidocontroller = TextEditingController();
+  final _usuariocontroller = TextEditingController();
 
   @override
   void dispose() {
     _emailcontroller.dispose();
     _passwordcontroller.dispose();
     _confirmarpasswordcontroller.dispose();
+    _nombrecontroller.dispose();
+    _apellidocontroller.dispose();
+    _usuariocontroller.dispose();
     super.dispose();
   }
 
   Future Registrarse() async{
     if (passwordConfirmada()){
+      //Crear usuario
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: _emailcontroller.text.trim(),
           password: _passwordcontroller.text.trim(),
+      );
+      //Agregar datos del usuario
+      agregarDatosUsuario(
+          _nombrecontroller.text.trim(),
+          _apellidocontroller.text.trim(),
+          _usuariocontroller.text.trim(),
+          _emailcontroller.text.trim()
       );
     }else{
       var snackBarIncorrecto = SnackBar(content: Text('Ingrese sus datos correctamente'),duration: Duration(seconds: 2),);
       ScaffoldMessenger.of(context).showSnackBar(snackBarIncorrecto);
     }
+  }
+
+  Future agregarDatosUsuario(String nombre,String apellido,String usuario,String email) async{
+    await FirebaseFirestore.instance.collection('usuarios').add({
+      'nombre': nombre,
+      'apellido': apellido,
+      'usuario': usuario,
+      'email': email,
+    });
   }
 
   bool passwordConfirmada(){
@@ -69,7 +93,7 @@ class _RegisterPageState extends State<RegisterPage>{
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(height: 50,),
-                    Image.asset('assets/images/logo_con_letras.png'),
+                    Image.asset('assets/images/logo.png',height: 100),
                     SizedBox(height: 20),
                     //Hola de nuevo
                     Text(
@@ -80,8 +104,82 @@ class _RegisterPageState extends State<RegisterPage>{
                         )
                     ),
                     SizedBox(height: 15),
+                    //Nombre Textfield
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(12)
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: TextField(
+                            controller: _nombrecontroller,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Nombre',
+                              hintStyle: TextStyle(color: Colors.grey[600]),
 
+                            ),
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 15),
+                    //Apellido Textfield
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(12)
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: TextField(
+                            controller: _apellidocontroller,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Apellido',
+                              hintStyle: TextStyle(color: Colors.grey[600]),
+
+                            ),
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 15),
                     //Usuario Textfield
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(12)
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: TextField(
+                            controller: _usuariocontroller,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Usuario',
+                              hintStyle: TextStyle(color: Colors.grey[600]),
+
+                            ),
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 15),
+                    //Email Textfield
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25),
                       child: Container(
@@ -168,7 +266,7 @@ class _RegisterPageState extends State<RegisterPage>{
                       height: 50,
                       child: ElevatedButton(
                           onPressed: (){
-                            if(_passwordcontroller.text.length<4){
+                            if(_passwordcontroller.text.length<6){
                               var snackBarPassword = SnackBar(content: Text('Por favor, ingrese una contraseña de por lo menos 6 caracteres'),duration: Duration(seconds: 2),);
                               ScaffoldMessenger.of(context).showSnackBar(snackBarPassword);
                             }else{
@@ -189,6 +287,7 @@ class _RegisterPageState extends State<RegisterPage>{
                           style: _styleBotones,
                           child: Text('VOLVER',style: TextStyle(color: Colors.white),)),
                     ),
+                    SizedBox(height: 30),
                   ],
                 ),
               ),
