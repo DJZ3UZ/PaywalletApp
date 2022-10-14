@@ -4,17 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
-
-class RegisterPage extends StatefulWidget{
+class RegisterPage extends StatefulWidget {
   final VoidCallback mostrarLoginPage;
-  const RegisterPage({Key? key, required this.mostrarLoginPage}): super(key: key);
+
+  const RegisterPage({Key? key, required this.mostrarLoginPage})
+      : super(key: key);
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage>{
+class _RegisterPageState extends State<RegisterPage> {
+  bool _isPasswordSixCharacters = false;
+
   final _emailcontroller = TextEditingController();
   final _passwordcontroller = TextEditingController();
   final _confirmarpasswordcontroller = TextEditingController();
@@ -33,27 +35,30 @@ class _RegisterPageState extends State<RegisterPage>{
     super.dispose();
   }
 
-  Future Registrarse() async{
-    if (passwordConfirmada()){
+  Future Registrarse() async {
+    if (passwordConfirmada()) {
       //Crear usuario
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailcontroller.text.trim(),
-          password: _passwordcontroller.text.trim(),
+        email: _emailcontroller.text.trim(),
+        password: _passwordcontroller.text.trim(),
       );
       //Agregar datos del usuario
       agregarDatosUsuario(
           _nombrecontroller.text.trim(),
           _apellidocontroller.text.trim(),
           _usuariocontroller.text.trim(),
-          _emailcontroller.text.trim()
+          _emailcontroller.text.trim());
+    } else {
+      var snackBarIncorrecto = SnackBar(
+        content: Text('Ingrese sus datos correctamente'),
+        duration: Duration(seconds: 2),
       );
-    }else{
-      var snackBarIncorrecto = SnackBar(content: Text('Ingrese sus datos correctamente'),duration: Duration(seconds: 2),);
       ScaffoldMessenger.of(context).showSnackBar(snackBarIncorrecto);
     }
   }
 
-  Future agregarDatosUsuario(String nombre,String apellido,String usuario,String email) async{
+  Future agregarDatosUsuario(
+      String nombre, String apellido, String usuario, String email) async {
     await FirebaseFirestore.instance.collection('usuarios').add({
       'nombre': nombre,
       'apellido': apellido,
@@ -62,12 +67,22 @@ class _RegisterPageState extends State<RegisterPage>{
     });
   }
 
-  bool passwordConfirmada(){
-    if(_passwordcontroller.text.trim() == _confirmarpasswordcontroller.text.trim()){
+  bool passwordConfirmada() {
+    if (_passwordcontroller.text.trim() ==
+        _confirmarpasswordcontroller.text.trim()) {
       return true;
-    }else{
+    } else {
       return false;
     }
+  }
+
+  onPasswordChanged(String password){
+    setState(() {
+      _isPasswordSixCharacters = false;
+      if(password.length>=6){
+        _isPasswordSixCharacters = true;
+      }
+    });
   }
 
   final _styleBotones = ElevatedButton.styleFrom(
@@ -75,14 +90,14 @@ class _RegisterPageState extends State<RegisterPage>{
       onPrimary: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       elevation: 10,
-      shadowColor: Colors.black12
-  );
+      shadowColor: Colors.black12);
 
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      title: 'Paywallet',
       theme: ThemeData.dark(),
       home: Scaffold(
           backgroundColor: Color(0xff3a4d54),
@@ -92,17 +107,17 @@ class _RegisterPageState extends State<RegisterPage>{
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(height: 50,),
-                    Image.asset('assets/images/logo.png',height: 100),
+                    SizedBox(
+                      height: 50,
+                    ),
+                    Image.asset('assets/images/logo.png', height: 50),
                     SizedBox(height: 20),
                     //Hola de nuevo
-                    Text(
-                        'Registrate llenando el formulario',
+                    Text('Registrate llenando el formulario',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.permanentMarker(
-                            fontSize: 24,
-                        )
-                    ),
+                          fontSize: 24,
+                        )),
                     SizedBox(height: 15),
                     //Nombre Textfield
                     Padding(
@@ -111,8 +126,7 @@ class _RegisterPageState extends State<RegisterPage>{
                         decoration: BoxDecoration(
                             color: Colors.grey.shade300,
                             border: Border.all(color: Colors.white),
-                            borderRadius: BorderRadius.circular(12)
-                        ),
+                            borderRadius: BorderRadius.circular(12)),
                         child: Padding(
                           padding: const EdgeInsets.only(left: 20),
                           child: TextField(
@@ -121,7 +135,6 @@ class _RegisterPageState extends State<RegisterPage>{
                               border: InputBorder.none,
                               hintText: 'Nombre',
                               hintStyle: TextStyle(color: Colors.grey[600]),
-
                             ),
                             style: TextStyle(color: Colors.black),
                           ),
@@ -136,8 +149,7 @@ class _RegisterPageState extends State<RegisterPage>{
                         decoration: BoxDecoration(
                             color: Colors.grey.shade300,
                             border: Border.all(color: Colors.white),
-                            borderRadius: BorderRadius.circular(12)
-                        ),
+                            borderRadius: BorderRadius.circular(12)),
                         child: Padding(
                           padding: const EdgeInsets.only(left: 20),
                           child: TextField(
@@ -146,7 +158,6 @@ class _RegisterPageState extends State<RegisterPage>{
                               border: InputBorder.none,
                               hintText: 'Apellido',
                               hintStyle: TextStyle(color: Colors.grey[600]),
-
                             ),
                             style: TextStyle(color: Colors.black),
                           ),
@@ -161,8 +172,7 @@ class _RegisterPageState extends State<RegisterPage>{
                         decoration: BoxDecoration(
                             color: Colors.grey.shade300,
                             border: Border.all(color: Colors.white),
-                            borderRadius: BorderRadius.circular(12)
-                        ),
+                            borderRadius: BorderRadius.circular(12)),
                         child: Padding(
                           padding: const EdgeInsets.only(left: 20),
                           child: TextField(
@@ -171,7 +181,6 @@ class _RegisterPageState extends State<RegisterPage>{
                               border: InputBorder.none,
                               hintText: 'Usuario',
                               hintStyle: TextStyle(color: Colors.grey[600]),
-
                             ),
                             style: TextStyle(color: Colors.black),
                           ),
@@ -186,8 +195,7 @@ class _RegisterPageState extends State<RegisterPage>{
                         decoration: BoxDecoration(
                             color: Colors.grey.shade300,
                             border: Border.all(color: Colors.white),
-                            borderRadius: BorderRadius.circular(12)
-                        ),
+                            borderRadius: BorderRadius.circular(12)),
                         child: Padding(
                           padding: const EdgeInsets.only(left: 20),
                           child: TextField(
@@ -197,7 +205,6 @@ class _RegisterPageState extends State<RegisterPage>{
                               border: InputBorder.none,
                               hintText: 'Email',
                               hintStyle: TextStyle(color: Colors.grey[600]),
-
                             ),
                             style: TextStyle(color: Colors.black),
                           ),
@@ -212,8 +219,7 @@ class _RegisterPageState extends State<RegisterPage>{
                         decoration: BoxDecoration(
                             color: Colors.grey.shade300,
                             border: Border.all(color: Colors.white),
-                            borderRadius: BorderRadius.circular(12)
-                        ),
+                            borderRadius: BorderRadius.circular(12)),
                         child: Padding(
                           padding: const EdgeInsets.only(left: 20),
                           child: TextField(
@@ -228,6 +234,7 @@ class _RegisterPageState extends State<RegisterPage>{
                               hintStyle: TextStyle(color: Colors.grey[600]),
                             ),
                             style: TextStyle(color: Colors.black),
+                            onChanged: (password) => onPasswordChanged(password),
                           ),
                         ),
                       ),
@@ -239,8 +246,7 @@ class _RegisterPageState extends State<RegisterPage>{
                         decoration: BoxDecoration(
                             color: Colors.grey.shade300,
                             border: Border.all(color: Colors.white),
-                            borderRadius: BorderRadius.circular(12)
-                        ),
+                            borderRadius: BorderRadius.circular(12)),
                         child: Padding(
                           padding: const EdgeInsets.only(left: 20),
                           child: TextField(
@@ -259,22 +265,56 @@ class _RegisterPageState extends State<RegisterPage>{
                         ),
                       ),
                     ),
+                    SizedBox(height: 15),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 25,right: 10),
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 500),
+                            width: 20,
+                            height: 20,
+                            decoration: BoxDecoration(
+                              color: _isPasswordSixCharacters ? Colors.green : Colors.transparent,
+                              border: _isPasswordSixCharacters ? Border.all(color: Colors.transparent) : Border.all(color: Colors.grey.shade400),
+                              borderRadius: BorderRadius.circular(50)
+                            ),
+                            child: Center(
+                              child: Icon(
+                                Icons.check,
+                                color: _isPasswordSixCharacters ? Colors.white : Colors.transparent,
+                                size: 15,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Text('La contraseña contiene al menos 6 caracteres')
+                      ],
+                    ),
                     SizedBox(height: 30),
                     //Iniciar Sesión Button
                     Container(
                       width: 200,
                       height: 50,
                       child: ElevatedButton(
-                          onPressed: (){
-                            if(_passwordcontroller.text.length<6){
-                              var snackBarPassword = SnackBar(content: Text('Por favor, ingrese una contraseña de por lo menos 6 caracteres'),duration: Duration(seconds: 2),);
-                              ScaffoldMessenger.of(context).showSnackBar(snackBarPassword);
-                            }else{
+                          onPressed: () {
+                            if (_passwordcontroller.text.length < 6) {
+                              var snackBarPassword = SnackBar(
+                                content: Text(
+                                    'Por favor, ingrese una contraseña de por lo menos 6 caracteres'),
+                                duration: Duration(seconds: 2),
+                              );
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBarPassword);
+                            } else {
                               Registrarse();
                             }
                           },
                           style: _styleBotones,
-                          child: Text('REGISTRARSE',style: TextStyle(color: Colors.white),)),
+                          child: Text(
+                            'REGISTRARSE',
+                            style: TextStyle(color: Colors.white),
+                          )),
                     ),
                     SizedBox(height: 30),
 
@@ -285,15 +325,17 @@ class _RegisterPageState extends State<RegisterPage>{
                       child: ElevatedButton(
                           onPressed: widget.mostrarLoginPage,
                           style: _styleBotones,
-                          child: Text('VOLVER',style: TextStyle(color: Colors.white),)),
+                          child: Text(
+                            'VOLVER',
+                            style: TextStyle(color: Colors.white),
+                          )),
                     ),
                     SizedBox(height: 30),
                   ],
                 ),
               ),
             ),
-          )
-      ),
+          )),
     );
   }
 }

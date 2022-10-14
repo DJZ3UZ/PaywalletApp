@@ -8,6 +8,7 @@ class SplashScreen extends StatelessWidget{
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      title: 'Paywallet',
       home: Scaffold(
         body: AnimatedSplashScreen(
           backgroundColor: Colors.black,

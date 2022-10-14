@@ -76,6 +76,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      title: 'Paywallet',
       theme: ThemeData.dark(),
       home: Scaffold(
         backgroundColor: Color(0xff3a4d54),

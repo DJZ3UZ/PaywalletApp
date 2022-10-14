@@ -46,6 +46,7 @@ class _LoginPageState extends State<LoginPage>{
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      title: 'Paywallet',
       theme: ThemeData.dark(),
       home: Scaffold(
         backgroundColor: Color(0xff3a4d54),

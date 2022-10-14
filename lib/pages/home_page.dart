@@ -44,6 +44,8 @@ class _HomePageState extends State<HomePage>{
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData.dark(),
+      title: 'Paywallet',
       home: Scaffold(
         extendBody: true,
         body: screens[index],
