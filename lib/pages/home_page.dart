@@ -1,6 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:paywallet_app/models/models.dart';
 import 'package:paywallet_app/views/views.dart';
 
 class HomePage extends StatefulWidget{
@@ -47,6 +48,7 @@ class _HomePageState extends State<HomePage>{
       theme: ThemeData.dark(),
       title: 'Paywallet',
       home: Scaffold(
+        resizeToAvoidBottomInset: false,
         extendBody: true,
         body: screens[index],
         bottomNavigationBar: Theme(

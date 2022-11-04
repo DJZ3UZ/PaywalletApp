@@ -49,6 +49,7 @@ class _LoginPageState extends State<LoginPage>{
       title: 'Paywallet',
       theme: ThemeData.dark(),
       home: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Color(0xff3a4d54),
         body: SingleChildScrollView(
           child: SafeArea(
