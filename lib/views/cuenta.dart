@@ -33,15 +33,25 @@ class _Cuenta extends State<Cuenta> {
       return Usuario.fromJson(snapshot.data()!);
     }
   }
+  
+  Future volverAutenticar() async{
+    String pass = _contrasenacontroller.text.trim();
+    await user.reauthenticateWithCredential(
+        EmailAuthProvider.credential(email: '${user.email}',password: pass)
+    );
+    user.delete();
+  }
 
   final _nombrecontroller = TextEditingController();
   final _apellidocontroller = TextEditingController();
   final _usuariocontroller = TextEditingController();
+  final _contrasenacontroller = TextEditingController();
 
   void dispose() {
     _nombrecontroller.dispose();
     _apellidocontroller.dispose();
     _usuariocontroller.dispose();
+    _contrasenacontroller.dispose();
     super.dispose();
   }
   /*// document IDs
@@ -221,7 +231,6 @@ class _Cuenta extends State<Cuenta> {
                           child: ElevatedButton(
                             style: _styleBotonEliminar,
                               onPressed: (){
-                              final docUser = FirebaseFirestore.instance.collection('usuarios').doc(uid);
                               showDialog(
                                   context: context,
                                   builder: (context) => AlertDialog(
@@ -237,9 +246,35 @@ class _Cuenta extends State<Cuenta> {
                                       //Salir
                                       TextButton(
                                           onPressed: () {
-                                            docUser.delete();
-                                            FirebaseAuth.instance.currentUser!.delete();
                                             Navigator.of(context).pop();
+                                            showDialog(
+                                                context: context,
+                                                builder: (context)=>AlertDialog(
+                                                  backgroundColor: Color(0xff3a4d54),
+                                                  title: Text('Por favor ingresa tu contraseña'),
+                                                  content: TextField(
+                                                    controller: _contrasenacontroller,
+                                                    obscureText: true,
+                                                    enableSuggestions: false,
+                                                  ),
+                                                  actions: [
+                                                    TextButton(
+                                                        onPressed: () {
+                                                          final docUser = FirebaseFirestore.instance.collection('usuarios').doc(uid);
+                                                          docUser.delete();
+                                                          volverAutenticar();
+                                                          Navigator.of(context).pop();
+                                                        },
+                                                        child: Text("Ok")),
+                                                    //Cancelar
+                                                    TextButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context).pop();
+                                                        },
+                                                        child: Text("Cancelar")),
+                                                  ],
+                                                )
+                                            );
                                           },
                                           child: Text("Eliminar")),
                                       //Cancelar
@@ -274,21 +309,7 @@ class _Cuenta extends State<Cuenta> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Nombre:'),
-                  Container(
-                    width: 250,
-                    child: TextFormField(
-                      controller: _nombrecontroller,
-                      decoration: InputDecoration(
-                        fillColor: Colors.grey.shade300,
-                        filled: true,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        hintText: user.nombre,
-                          hintStyle: TextStyle(color: Colors.black)
-                      ),
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
+                  Campo(user,'nombre',_nombrecontroller),
                 ],
               ),
             ),
@@ -299,21 +320,7 @@ class _Cuenta extends State<Cuenta> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Apellido:'),
-                  Container(
-                    width: 250,
-                    child: TextFormField(
-                      controller: _apellidocontroller,
-                      decoration: InputDecoration(
-                        fillColor: Colors.grey.shade300,
-                        filled: true,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                          hintText: user.apellido,
-                        hintStyle: TextStyle(color: Colors.black)
-                      ),
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
+                  Campo(user,'apellido',_apellidocontroller),
                 ],
               ),
             ),
@@ -324,21 +331,7 @@ class _Cuenta extends State<Cuenta> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Usuario:'),
-                  Container(
-                    width: 250,
-                    child: TextFormField(
-                      controller: _usuariocontroller,
-                      decoration: InputDecoration(
-                          fillColor: Colors.grey.shade300,
-                          filled: true,
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                          hintText: user.usuario,
-                          hintStyle: TextStyle(color: Colors.black)
-                      ),
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
+                  Campo(user,'usuario',_usuariocontroller),
                 ],
               ),
             ),
@@ -367,4 +360,39 @@ class _Cuenta extends State<Cuenta> {
           ],
         ),
       );
+
+  Widget Campo(Usuario user,String tipo, campoController){
+    String nombre = user.nombre;
+    String apellido = user.apellido;
+    String usuario = user.usuario;
+    switch(tipo){
+      case 'nombre':{
+        tipo = nombre;
+      } break;
+      case 'apellido':{
+        tipo = apellido;
+      } break;
+      case 'usuario':{
+        tipo = usuario;
+      } break;
+      default:{
+        print('Elección no valida');
+      }break;
+    }
+    return Container(
+      width: 250,
+      child: TextFormField(
+        controller: campoController,
+        decoration: InputDecoration(
+            fillColor: Colors.grey.shade300,
+            filled: true,
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12)),
+            hintText: tipo,
+            hintStyle: TextStyle(color: Colors.black)
+        ),
+        style: TextStyle(color: Colors.black),
+      ),
+    );
+  }
 }
