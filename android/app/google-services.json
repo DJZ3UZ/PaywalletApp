@@ -29,6 +29,13 @@
             {
               "client_id": "748257579563-gndlu3kkc1fgdnkv9jlvr4lsgj2i07im.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "748257579563-oeiucvjnhhjrnlfvgvpp5a158r3epm85.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.paywallet.paywalletApp"
+              }
             }
           ]
         }
