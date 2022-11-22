@@ -23,13 +23,6 @@ class _Cuenta extends State<Cuenta> {
   String imageUrl = '';
   final Storage storage = Storage();
 
-  //Para leer todos los usuarios
-  Stream<List<Usuario>> leerUsuarios() => FirebaseFirestore.instance
-      .collection('usuarios/')
-      .snapshots()
-      .map((snapshot) =>
-          snapshot.docs.map((doc) => Usuario.fromJson(doc.data())).toList());
-
   //Para leer solo mi usuario
   Future<Usuario?> leerUsuario() async {
     //Get document by ID
