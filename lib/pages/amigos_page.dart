@@ -21,6 +21,14 @@ class _AmigosPageState extends State<AmigosPage> {
   String retorno = "";
   List<String> solIDs = [];
 
+  Future<Usuario?> leerUsuario() async {
+    //Get document by ID
+    final docUser = FirebaseFirestore.instance.collection('usuarios/').doc(uid);
+    final snapshot = await docUser.get();
+    if (snapshot.exists) {
+      return Usuario.fromJson(snapshot.data()!);
+    }
+  }
   Future getSolicitudes() async {
     await FirebaseFirestore.instance.collection('solicitudes/').doc(uid).collection('solicitado').get().then(
             (snapshot) =>
@@ -220,12 +228,25 @@ class _AmigosPageState extends State<AmigosPage> {
                     actions: [
                       //Salir
                       TextButton(
-                          onPressed: () {
-                            solicitarAmistad(){
-                              solisRef.doc(usuario.id).collection('solicitado').doc(uid).set(
-                                  {});
+                          onPressed: () async {
+                            Usuario currentUsuario = Usuario(nombre: "", apellido: "", usuario: "", email: "");
+                            final docUser = FirebaseFirestore.instance.collection('usuarios/').doc(uid);
+                            final snapshot = await docUser.get();
+                            if (snapshot.exists) {
+                              currentUsuario = Usuario.fromJson(snapshot.data()!);
                             }
-                            solicitarAmistad();
+                            solicitarAmistad(Usuario currentUser){
+                              solisRef.doc(usuario.id).collection('solicitado').doc(uid).set(
+                                  {
+                                    "id": currentUser.id,
+                                    "nombre": currentUser.nombre,
+                                    "apellido": currentUser.apellido,
+                                    "usuario": currentUser.usuario,
+                                    "imagen": currentUser.imagen,
+                                    "email": currentUser.email
+                                  });
+                            }
+                            solicitarAmistad(currentUsuario);
                             Navigator.pop(context);
                           },
                           child: Text("Enviar")),
