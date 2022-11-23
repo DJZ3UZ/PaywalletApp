@@ -35,6 +35,15 @@ class Usuario {
     imagen: json['imagen']
   );
 
+  static Usuario fromJsonWithId(String userid,Map<String, dynamic> json)=>Usuario(
+      id: json[userid],
+      nombre: json['nombre'],
+      apellido: json['apellido'],
+      usuario: json['usuario'],
+      email: json['email'],
+      imagen: json['imagen']
+  );
+
   String getUsuario() {
     return this.usuario;
   }
