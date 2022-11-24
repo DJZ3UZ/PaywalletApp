@@ -16,25 +16,24 @@ class SolicitudesPage extends StatefulWidget {
 class _SolicitudesPageState extends State<SolicitudesPage> {
   final user = FirebaseAuth.instance.currentUser!;
   final String uid = FirebaseAuth.instance.currentUser!.uid.toString();
-  List<String> docIDs = [];
+  List<String> solIDs = [];
 
-  Future getDocId() async {
+  Future getSolId() async {
     await solisRef
         .doc(uid)
         .collection('solicitado')
         .get()
         .then((snapshot) => snapshot.docs.forEach((document) {
               print(document.reference);
-              docIDs.add(document.reference.id);
+              solIDs.add(document.reference.id);
               setState(() {
-                print(docIDs.toString());
+                print(solIDs.toString());
               });
             }));
   }
 
   //Para leer todos los usuarios
-  Stream<List<Usuario>> leerUsuarios() => FirebaseFirestore.instance
-      .collection('solicitudes/')
+  Stream<List<Usuario>> leerSolicitudes() => solisRef
       .doc(uid)
       .collection('solicitado')
       .snapshots()
@@ -43,7 +42,7 @@ class _SolicitudesPageState extends State<SolicitudesPage> {
 
   @override
   void initState() {
-    getDocId();
+    getSolId();
     super.initState();
   }
 
@@ -93,7 +92,7 @@ class _SolicitudesPageState extends State<SolicitudesPage> {
                 ],
               ),
             ),
-            docIDs.isEmpty
+            solIDs.isEmpty
                 ? const Expanded(
                     child: Center(
                         child: Text(
@@ -102,7 +101,7 @@ class _SolicitudesPageState extends State<SolicitudesPage> {
                   )))
                 : Expanded(
                     child: StreamBuilder<List<Usuario>>(
-                      stream: leerUsuarios(),
+                      stream: leerSolicitudes(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           final users = snapshot.data!;
@@ -143,78 +142,7 @@ class _SolicitudesPageState extends State<SolicitudesPage> {
             ),
             title: Text("${usuario.nombre} ${usuario.apellido}"),
             subtitle: Text(usuario.email.toString()),
-            onTap: () {
-              /*showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                              backgroundColor: Color(0xff3a4d54),
-                              title: Text(
-                                '¿Deseas agregar a este usuario?',
-                                style:
-                                    TextStyle(color: Colors.white, fontSize: 18),
-                              ),
-                              actions: [
-                                //Agregar
-                                TextButton(
-                                    onPressed: () async {
-                                      Usuario currentUsuario = Usuario(nombre: "", apellido: "", usuario: "", email: "");
-                                      final docUser = FirebaseFirestore.instance.collection('usuarios/').doc(uid);
-                                      final snapshot = await docUser.get();
-                                      if (snapshot.exists) {
-                                        currentUsuario = Usuario.fromJson(snapshot.data()!);
-                                      }
-                                      aceptarAmistad(){
-                                        amigosRef.doc(uid).collection('agregado').doc(usuario.id).set(
-                                            {
-                                              "id": usuario.id,
-                                              "nombre": usuario.nombre,
-                                              "apellido": usuario.apellido,
-                                              "usuario": usuario.usuario,
-                                              "imagen": usuario.imagen,
-                                              "email": usuario.email
-                                            });
-                                      }
-                                      agregarAmistadListaOtroUsuario(currentUsuario){
-                                        amigosRef.doc(usuario.id).collection('agregado').doc(uid).set(
-                                            {
-                                              "id": currentUsuario.id,
-                                              "nombre": currentUsuario.nombre,
-                                              "apellido": currentUsuario.apellido,
-                                              "usuario": currentUsuario.usuario,
-                                              "imagen": currentUsuario.imagen,
-                                              "email": currentUsuario.email
-                                            });
-                                      }
-                                      eliminarSolicitud(){
-                                        solisRef.doc(uid).collection('solicitado').doc(usuario.id).delete();
-                                      }
-                                      aceptarAmistad();
-                                      agregarAmistadListaOtroUsuario(currentUsuario);
-                                      eliminarSolicitud();
-                                      docIDs.removeWhere((element) => element == usuario.id);
-                                      setState(() {
-                                        getDocId();
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text("Aceptar")),
-                                //Cancelar
-                                TextButton(
-                                    onPressed: () {
-                                      eliminarSolicitud(){
-                                        solisRef.doc(uid).collection('solicitado').doc(usuario.id).delete();
-                                      }
-                                      eliminarSolicitud();
-                                      docIDs.removeWhere((element) => element == usuario.id);
-                                      setState(() {
-                                        getDocId();
-                                      });
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text("Rechazar",style: TextStyle(color: Colors.red),)),
-                              ],
-                            ));*/
-            },
+
           ),
           Positioned(
               top: 25,
@@ -228,7 +156,7 @@ class _SolicitudesPageState extends State<SolicitudesPage> {
                     if (snapshot.exists) {
                       currentUsuario = Usuario.fromJson(snapshot.data()!);
                     }
-                    aceptarAmistad(){
+                    aceptarAmistad(Usuario currentUsuario){
                       amigosRef.doc(uid).collection('agregado').doc(usuario.id).set(
                           {
                             "id": usuario.id,
@@ -238,8 +166,6 @@ class _SolicitudesPageState extends State<SolicitudesPage> {
                             "imagen": usuario.imagen,
                             "email": usuario.email
                           });
-                    }
-                    agregarAmistadListaOtroUsuario(currentUsuario){
                       amigosRef.doc(usuario.id).collection('agregado').doc(uid).set(
                           {
                             "id": currentUsuario.id,
@@ -249,16 +175,12 @@ class _SolicitudesPageState extends State<SolicitudesPage> {
                             "imagen": currentUsuario.imagen,
                             "email": currentUsuario.email
                           });
-                    }
-                    eliminarSolicitud(){
                       solisRef.doc(uid).collection('solicitado').doc(usuario.id).delete();
                     }
-                    aceptarAmistad();
-                    agregarAmistadListaOtroUsuario(currentUsuario);
-                    eliminarSolicitud();
-                    docIDs.removeWhere((element) => element == usuario.id);
+                    aceptarAmistad(currentUsuario);
+                    solIDs.removeWhere((element) => element == usuario.id);
                     setState(() {
-                      getDocId();
+                      getSolId();
                     });
                   },
                   child: Icon(Icons.check, color: Colors.green)
@@ -270,14 +192,37 @@ class _SolicitudesPageState extends State<SolicitudesPage> {
               child:
               GestureDetector(
                   onTap: (){
-                    eliminarSolicitud(){
-                      solisRef.doc(uid).collection('solicitado').doc(usuario.id).delete();
-                    }
-                    eliminarSolicitud();
-                    docIDs.removeWhere((element) => element == usuario.id);
-                    setState(() {
-                      getDocId();
-                    });
+                    showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          backgroundColor: Color(0xff3a4d54),
+                          title: Text(
+                            '¿Seguro que deseas eliminar esta solicitud?',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                          actions: [
+                            //Eliminar
+                            TextButton(
+                                onPressed: () async {
+                                  eliminarSolicitud(){
+                                    solisRef.doc(uid).collection('solicitado').doc(usuario.id).delete();
+                                  }
+                                  eliminarSolicitud();
+                                  solIDs.removeWhere((element) => element == usuario.id);
+                                  setState(() {
+                                    getSolId();
+                                  });
+                                  Navigator.pop(context);
+                                },
+                                child: Text("Eliminar",style: TextStyle(color: Colors.red),)),
+                            //Cancelar
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text("Cancelar")),
+                          ],
+                        ));
                   },
                   child: Icon(Icons.delete, color: Colors.red)
               )
