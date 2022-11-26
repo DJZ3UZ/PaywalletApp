@@ -21,12 +21,12 @@ class _AmigosPageState extends State<AmigosPage> {
   String retorno = "";
   List<String> solIDs = [];
 
-  Future<Usuario?> leerUsuario() async {
+  Future<Ahorro?> leerUsuario() async {
     //Get document by ID
     final docUser = FirebaseFirestore.instance.collection('usuarios/').doc(uid);
     final snapshot = await docUser.get();
     if (snapshot.exists) {
-      return Usuario.fromJson(snapshot.data()!);
+      return Ahorro.fromJson(snapshot.data()!);
     }
   }
   Future getSolicitudes() async {
@@ -42,18 +42,18 @@ class _AmigosPageState extends State<AmigosPage> {
   }
 
   //Para leer todos los usuarios
-  Stream<List<Usuario>> leerUsuarios() => FirebaseFirestore.instance
+  Stream<List<Ahorro>> leerUsuarios() => FirebaseFirestore.instance
       .collection('usuarios/')
       .snapshots()
       .map((snapshot) =>
-          snapshot.docs.map((doc) => Usuario.fromJson(doc.data())).toList());
+          snapshot.docs.map((doc) => Ahorro.fromJson(doc.data())).toList());
 
   //Para buscar un usuario con un nombre especifico
-  Stream<List<Usuario>> buscarUsuarios() => FirebaseFirestore.instance
+  Stream<List<Ahorro>> buscarUsuarios() => FirebaseFirestore.instance
       .collection('usuarios/')
       .snapshots()
       .map((snapshot) => snapshot.docs
-              .map((doc) => Usuario.fromJson(doc.data()))
+              .map((doc) => Ahorro.fromJson(doc.data()))
               .where((name) {
             if (name.nombre.toString().toLowerCase() !=
                 nombre.toString().toLowerCase()) {
@@ -87,21 +87,22 @@ class _AmigosPageState extends State<AmigosPage> {
                 children: [
                   Align(
                     alignment: Alignment.topLeft,
-                    child: Container(
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Color(0xff202f36),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Icon(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Color(0xff202f36),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(
                             Icons.arrow_back,
                             color: Colors.white,
                             size: 28,
-                          )),
+                          ),
+                      ),
                     ),
                   ),
                   const Align(
@@ -122,25 +123,25 @@ class _AmigosPageState extends State<AmigosPage> {
                         alignment: Alignment.topRight,
                         children: [
                           Container(
-                            child: Container(
-                              padding: EdgeInsets.symmetric(vertical: 15,horizontal: 10),
-                              decoration: BoxDecoration(
-                                color: Color(0xff202f36),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                SolicitudesPage()));
-                                  },
-                                  child: const Text(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            SolicitudesPage()));
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(vertical: 15,horizontal: 10),
+                                decoration: BoxDecoration(
+                                  color: Color(0xff202f36),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Text(
                                       'Solicitudes',
                                       style: TextStyle(
                                         fontSize: 12
                                       ),
-                                  )
+                                  ),
                               ),
                             ),
                           ),
@@ -180,7 +181,7 @@ class _AmigosPageState extends State<AmigosPage> {
               ),
             ),
             Expanded(
-              child: StreamBuilder<List<Usuario>>(
+              child: StreamBuilder<List<Ahorro>>(
                 stream: nombre.isEmpty ? leerUsuarios() : buscarUsuarios(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
@@ -202,7 +203,7 @@ class _AmigosPageState extends State<AmigosPage> {
     );
   }
 
-  Widget buildUser(Usuario usuario) {
+  Widget buildUser(Ahorro usuario) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: ListTile(
@@ -229,13 +230,13 @@ class _AmigosPageState extends State<AmigosPage> {
                       //Salir
                       TextButton(
                           onPressed: () async {
-                            Usuario currentUsuario = Usuario(nombre: "", apellido: "", usuario: "", email: "");
+                            Ahorro currentUsuario = Ahorro(nombre: "", apellido: "", usuario: "", email: "");
                             final docUser = FirebaseFirestore.instance.collection('usuarios/').doc(uid);
                             final snapshot = await docUser.get();
                             if (snapshot.exists) {
-                              currentUsuario = Usuario.fromJson(snapshot.data()!);
+                              currentUsuario = Ahorro.fromJson(snapshot.data()!);
                             }
-                            solicitarAmistad(Usuario currentUser){
+                            solicitarAmistad(Ahorro currentUser){
                               solisRef.doc(usuario.id).collection('solicitado').doc(uid).set(
                                   {
                                     "id": currentUser.id,

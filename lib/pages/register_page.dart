@@ -45,7 +45,7 @@ class _RegisterPageState extends State<RegisterPage> {
         password: _passwordcontroller.text.trim(),
       );
       //Agregar datos del usuario
-      final user = Usuario(
+      final user = Ahorro(
         nombre: _nombrecontroller.text.trim(),
         apellido: _apellidocontroller.text.trim(),
         usuario: _usuariocontroller.text.trim(),
@@ -66,7 +66,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  Future crearUsuario(Usuario user) async{
+  Future crearUsuario(Ahorro user) async{
     final uid = FirebaseAuth.instance.currentUser!.uid.toString();
     final docUser = FirebaseFirestore.instance.collection('usuarios').doc(uid);
     user.id=docUser.id;

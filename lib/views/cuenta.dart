@@ -24,12 +24,12 @@ class _Cuenta extends State<Cuenta> {
   final Storage storage = Storage();
 
   //Para leer solo mi usuario
-  Future<Usuario?> leerUsuario() async {
+  Future<Ahorro?> leerUsuario() async {
     //Get document by ID
     final docUser = FirebaseFirestore.instance.collection('usuarios/').doc(uid);
     final snapshot = await docUser.get();
     if (snapshot.exists) {
-      return Usuario.fromJson(snapshot.data()!);
+      return Ahorro.fromJson(snapshot.data()!);
     }
   }
 
@@ -47,8 +47,8 @@ class _Cuenta extends State<Cuenta> {
         .collection('usuarios/')
         .doc(uid)
         .withConverter(
-            fromFirestore: Usuario.fromFirestore,
-            toFirestore: (Usuario user, _) => user.toFirestore());
+            fromFirestore: Ahorro.fromFirestore,
+            toFirestore: (Ahorro user, _) => user.toFirestore());
     final snapshot = await docUser.get();
     Reference ref =
         FirebaseStorage.instance.ref(user.uid).child('fotoperfil.jpg');
@@ -72,8 +72,8 @@ class _Cuenta extends State<Cuenta> {
         .collection('usuarios/')
         .doc(uid)
         .withConverter(
-            fromFirestore: Usuario.fromFirestore,
-            toFirestore: (Usuario user, _) => user.toFirestore());
+            fromFirestore: Ahorro.fromFirestore,
+            toFirestore: (Ahorro user, _) => user.toFirestore());
     final snapshot = await docUser.get();
     Reference ref =
         FirebaseStorage.instance.ref(user.uid).child('fotoperfil.jpg');
@@ -150,46 +150,47 @@ class _Cuenta extends State<Cuenta> {
                     alignment: Alignment.topRight,
                     child: Padding(
                       padding: const EdgeInsets.all(20),
-                      child: Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Color(0xff202f36),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: GestureDetector(
-                            onTap: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                        backgroundColor: Color(0xff3a4d54),
-                                        title: Text(
-                                          '¿Seguro que deseas cerrar sesión?',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 18),
-                                        ),
-                                        actions: [
-                                          //Salir
-                                          TextButton(
-                                              onPressed: () {
-                                                FirebaseAuth.instance.signOut();
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: Text("Salir")),
-                                          //Cancelar
-                                          TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: Text("Cancelar")),
-                                        ],
-                                      ));
-                            },
-                            child: Icon(
+                      child: GestureDetector(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                backgroundColor: Color(0xff3a4d54),
+                                title: Text(
+                                  '¿Seguro que deseas cerrar sesión?',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18),
+                                ),
+                                actions: [
+                                  //Salir
+                                  TextButton(
+                                      onPressed: () {
+                                        FirebaseAuth.instance.signOut();
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text("Salir")),
+                                  //Cancelar
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text("Cancelar")),
+                                ],
+                              ));
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Color(0xff202f36),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
                               Icons.logout,
                               color: Colors.white,
                               size: 28,
-                            )),
+                            ),
+                        ),
                       ),
                     ),
                   ),
@@ -228,7 +229,7 @@ class _Cuenta extends State<Cuenta> {
                       child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25),
                     //Para leer solo mi usuario
-                    child: FutureBuilder<Usuario?>(
+                    child: FutureBuilder<Ahorro?>(
                         future: leerUsuario(),
                         builder: (context, snapshot) {
                           if (snapshot.hasError) {
@@ -396,7 +397,7 @@ class _Cuenta extends State<Cuenta> {
         ));
   }
 
-  Widget buildUsuario(Usuario user) => Center(
+  Widget buildUsuario(Ahorro user) => Center(
         child: Column(
           children: [
             SizedBox(height: 50),
@@ -458,7 +459,7 @@ class _Cuenta extends State<Cuenta> {
         ),
       );
 
-  Widget Campo(Usuario user, String tipo, campoController) {
+  Widget Campo(Ahorro user, String tipo, campoController) {
     String nombre = user.nombre;
     String apellido = user.apellido;
     String usuario = user.usuario;

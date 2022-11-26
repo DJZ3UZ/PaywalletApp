@@ -1,10 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:paywallet_app/models/models.dart';
 import 'package:paywallet_app/views/views.dart';
 
 class HomePage extends StatefulWidget{
@@ -17,6 +13,7 @@ class HomePage extends StatefulWidget{
 class _HomePageState extends State<HomePage>{
   final navigationKey = GlobalKey<CurvedNavigationBarState>();
   int index = 0;
+  int selectedpage = 3;
   final screens =[
     Grupos(),
     Amigos(),
@@ -63,7 +60,9 @@ class _HomePageState extends State<HomePage>{
               color: Color(0xff202f36),
               index: index,
               items: items,
-              onTap: (index) => setState(()=>this.index = index),
+              onTap: (index) {
+                setState(()=>this.index = index);
+              },
               animationDuration: Duration(milliseconds: 350),
             )
         ),

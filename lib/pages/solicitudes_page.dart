@@ -33,12 +33,12 @@ class _SolicitudesPageState extends State<SolicitudesPage> {
   }
 
   //Para leer todos los usuarios
-  Stream<List<Usuario>> leerSolicitudes() => solisRef
+  Stream<List<Ahorro>> leerSolicitudes() => solisRef
       .doc(uid)
       .collection('solicitado')
       .snapshots()
       .map((snapshot) =>
-          snapshot.docs.map((doc) => Usuario.fromJson(doc.data())).toList());
+          snapshot.docs.map((doc) => Ahorro.fromJson(doc.data())).toList());
 
   @override
   void initState() {
@@ -60,21 +60,22 @@ class _SolicitudesPageState extends State<SolicitudesPage> {
                 children: [
                   Align(
                     alignment: Alignment.topLeft,
-                    child: Container(
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Color(0xff202f36),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Icon(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Color(0xff202f36),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(
                             Icons.arrow_back,
                             color: Colors.white,
                             size: 28,
-                          )),
+                          ),
+                      ),
                     ),
                   ),
                   const Align(
@@ -100,7 +101,7 @@ class _SolicitudesPageState extends State<SolicitudesPage> {
                     style: TextStyle(fontSize: 18),
                   )))
                 : Expanded(
-                    child: StreamBuilder<List<Usuario>>(
+                    child: StreamBuilder<List<Ahorro>>(
                       stream: leerSolicitudes(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
@@ -122,7 +123,7 @@ class _SolicitudesPageState extends State<SolicitudesPage> {
     );
   }
 
-  Widget buildUser(Usuario usuario) {
+  Widget buildUser(Ahorro usuario) {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Stack(children: [
@@ -150,13 +151,13 @@ class _SolicitudesPageState extends State<SolicitudesPage> {
               child:
               GestureDetector(
                   onTap: () async {
-                    Usuario currentUsuario = Usuario(nombre: "", apellido: "", usuario: "", email: "");
+                    Ahorro currentUsuario = Ahorro(nombre: "", apellido: "", usuario: "", email: "");
                     final docUser = FirebaseFirestore.instance.collection('usuarios/').doc(uid);
                     final snapshot = await docUser.get();
                     if (snapshot.exists) {
-                      currentUsuario = Usuario.fromJson(snapshot.data()!);
+                      currentUsuario = Ahorro.fromJson(snapshot.data()!);
                     }
-                    aceptarAmistad(Usuario currentUsuario){
+                    aceptarAmistad(Ahorro currentUsuario){
                       amigosRef.doc(uid).collection('agregado').doc(usuario.id).set(
                           {
                             "id": usuario.id,

@@ -48,9 +48,9 @@ class _AmigosState extends State<Amigos> {
             }));
   }
 
-  Stream<List<Usuario>> leerAmigos() =>
+  Stream<List<Ahorro>> leerAmigos() =>
       amigosRef.doc(uid).collection('agregado').snapshots().map((snapshot) =>
-          snapshot.docs.map((doc) => Usuario.fromJson(doc.data())).toList());
+          snapshot.docs.map((doc) => Ahorro.fromJson(doc.data())).toList());
 
   @override
   void initState() {
@@ -85,23 +85,24 @@ class _AmigosState extends State<Amigos> {
                             fontWeight: FontWeight.bold),
                       ),
                       Stack(alignment: Alignment.topRight, children: [
-                        Container(
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => AmigosPage()));
+                          },
                           child: Container(
-                            padding: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Color(0xff202f36),
-                              borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              padding: EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Color(0xff202f36),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Icon(
+                                Icons.person_add,
+                                color: Colors.white,
+                                size: 28,
+                              ),
                             ),
-                            child: GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => AmigosPage()));
-                                },
-                                child: const Icon(
-                                  Icons.person_add,
-                                  color: Colors.white,
-                                  size: 28,
-                                )),
                           ),
                         ),
                         CircleAvatar(
@@ -121,7 +122,7 @@ class _AmigosState extends State<Amigos> {
                         style: TextStyle(fontSize: 18),
                       )))
                     : Expanded(
-                        child: StreamBuilder<List<Usuario>>(
+                        child: StreamBuilder<List<Ahorro>>(
                           stream: leerAmigos(),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
@@ -143,7 +144,7 @@ class _AmigosState extends State<Amigos> {
         ));
   }
 
-  Widget buildUser(Usuario usuario) {
+  Widget buildUser(Ahorro usuario) {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Stack(children: [
@@ -172,43 +173,49 @@ class _AmigosState extends State<Amigos> {
                     showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
-                          backgroundColor: Color(0xff3a4d54),
-                          title: Text(
-                            '¿Seguro que deseas eliminar a este usuario de tu lista de amigos?',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          ),
-                          actions: [
-                            //Eliminar
-                            TextButton(
-                                onPressed: () async {
-                                  eliminarAmigo() {
-                                    amigosRef
-                                        .doc(uid)
-                                        .collection('agregado')
-                                        .doc(usuario.id)
-                                        .delete();
-                                    amigosRef
-                                        .doc(usuario.id)
-                                        .collection('agregado')
-                                        .doc(uid)
-                                        .delete();
-                                  }
-                                  eliminarAmigo();
-                                  friendIDs.removeWhere((element) => element == usuario.id);
-                                  setState(() {
-                                    getAmigos();
-                                  });
-                                  Navigator.pop(context);
-                                },
-                                child: Text("Eliminar",style: TextStyle(color: Colors.red),)),
-                            //Cancelar
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text("Cancelar")),
-                          ],
-                        ));
+                              backgroundColor: Color(0xff3a4d54),
+                              title: Text(
+                                '¿Seguro que deseas eliminar a este usuario de tu lista de amigos?',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 18),
+                              ),
+                              actions: [
+                                //Eliminar
+                                TextButton(
+                                    onPressed: () async {
+                                      eliminarAmigo() {
+                                        amigosRef
+                                            .doc(uid)
+                                            .collection('agregado')
+                                            .doc(usuario.id)
+                                            .delete();
+                                        amigosRef
+                                            .doc(usuario.id)
+                                            .collection('agregado')
+                                            .doc(uid)
+                                            .delete();
+                                      }
+
+                                      eliminarAmigo();
+                                      friendIDs.removeWhere(
+                                          (element) => element == usuario.id);
+                                      setState(() {
+                                        getAmigos();
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text(
+                                      "Eliminar",
+                                      style: TextStyle(color: Colors.red),
+                                    )),
+                                //Cancelar
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text("Cancelar")),
+                              ],
+                            ));
                   },
                   child: Icon(Icons.delete, color: Colors.red))),
         ]));
