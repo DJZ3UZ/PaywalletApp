@@ -5,7 +5,6 @@ import 'package:paywallet_app/pages/pages.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
   runApp(MyApp());
 }
 

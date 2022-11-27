@@ -21,12 +21,12 @@ class _AmigosPageState extends State<AmigosPage> {
   String retorno = "";
   List<String> solIDs = [];
 
-  Future<Ahorro?> leerUsuario() async {
+  Future<Usuario?> leerUsuario() async {
     //Get document by ID
     final docUser = FirebaseFirestore.instance.collection('usuarios/').doc(uid);
     final snapshot = await docUser.get();
     if (snapshot.exists) {
-      return Ahorro.fromJson(snapshot.data()!);
+      return Usuario.fromJson(snapshot.data()!);
     }
   }
   Future getSolicitudes() async {
@@ -42,18 +42,18 @@ class _AmigosPageState extends State<AmigosPage> {
   }
 
   //Para leer todos los usuarios
-  Stream<List<Ahorro>> leerUsuarios() => FirebaseFirestore.instance
+  Stream<List<Usuario>> leerUsuarios() => FirebaseFirestore.instance
       .collection('usuarios/')
       .snapshots()
       .map((snapshot) =>
-          snapshot.docs.map((doc) => Ahorro.fromJson(doc.data())).toList());
+          snapshot.docs.map((doc) => Usuario.fromJson(doc.data())).toList());
 
   //Para buscar un usuario con un nombre especifico
-  Stream<List<Ahorro>> buscarUsuarios() => FirebaseFirestore.instance
+  Stream<List<Usuario>> buscarUsuarios() => FirebaseFirestore.instance
       .collection('usuarios/')
       .snapshots()
       .map((snapshot) => snapshot.docs
-              .map((doc) => Ahorro.fromJson(doc.data()))
+              .map((doc) => Usuario.fromJson(doc.data()))
               .where((name) {
             if (name.nombre.toString().toLowerCase() !=
                 nombre.toString().toLowerCase()) {
@@ -181,7 +181,7 @@ class _AmigosPageState extends State<AmigosPage> {
               ),
             ),
             Expanded(
-              child: StreamBuilder<List<Ahorro>>(
+              child: StreamBuilder<List<Usuario>>(
                 stream: nombre.isEmpty ? leerUsuarios() : buscarUsuarios(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
@@ -203,7 +203,7 @@ class _AmigosPageState extends State<AmigosPage> {
     );
   }
 
-  Widget buildUser(Ahorro usuario) {
+  Widget buildUser(Usuario usuario) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: ListTile(
@@ -230,13 +230,13 @@ class _AmigosPageState extends State<AmigosPage> {
                       //Salir
                       TextButton(
                           onPressed: () async {
-                            Ahorro currentUsuario = Ahorro(nombre: "", apellido: "", usuario: "", email: "");
+                            Usuario currentUsuario = Usuario(nombre: "", apellido: "", usuario: "", email: "");
                             final docUser = FirebaseFirestore.instance.collection('usuarios/').doc(uid);
                             final snapshot = await docUser.get();
                             if (snapshot.exists) {
-                              currentUsuario = Ahorro.fromJson(snapshot.data()!);
+                              currentUsuario = Usuario.fromJson(snapshot.data()!);
                             }
-                            solicitarAmistad(Ahorro currentUser){
+                            solicitarAmistad(Usuario currentUser){
                               solisRef.doc(usuario.id).collection('solicitado').doc(uid).set(
                                   {
                                     "id": currentUser.id,

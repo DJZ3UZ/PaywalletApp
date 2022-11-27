@@ -23,7 +23,7 @@ class _ActividadState extends State<Actividad> {
   double ahorro = 0;
   double cantidadMinima = 0;
   String tipoAhorro = '';
-  final String fechaActual = "2023-02-26 12:16:03.198591"; //DateTime.now().toString();
+  final String fechaActual = DateTime.now().toString();
 
 
   Future getActivity() async {
@@ -33,12 +33,7 @@ class _ActividadState extends State<Actividad> {
         .get()
         .then((snapshot) =>
         snapshot.docs.forEach((document) {
-          //print(document.reference);
           actIDs.add(document.reference.id);
-          setState(() {
-            //print(document.reference.id);
-            //print(actIDs);
-          });
         }));
   }
 

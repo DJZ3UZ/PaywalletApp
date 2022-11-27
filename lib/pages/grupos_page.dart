@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:paywallet_app/models/models.dart';
@@ -15,7 +14,7 @@ class _GruposPageState extends State<GruposPage> {
   final user = FirebaseAuth.instance.currentUser!;
   final String uid = FirebaseAuth.instance.currentUser!.uid.toString();
   List<String> friendIDs = [];
-  List<Ahorro> usuariosGrupo=[];
+  List<Usuario> usuariosGrupo=[];
   bool isChecked = false;
   int index=0;
   List<String> numero=[];
@@ -35,9 +34,9 @@ class _GruposPageState extends State<GruposPage> {
     }));
   }
 
-  Stream<List<Ahorro>> leerAmigos() =>
+  Stream<List<Usuario>> leerAmigos() =>
       amigosRef.doc(uid).collection('agregado').snapshots().map((snapshot) =>
-          snapshot.docs.map((doc) => Ahorro.fromJson(doc.data())).toList());
+          snapshot.docs.map((doc) => Usuario.fromJson(doc.data())).toList());
 
   final _styleBotones = ElevatedButton.styleFrom(
       backgroundColor: Color(0xff202f36),
@@ -132,7 +131,7 @@ class _GruposPageState extends State<GruposPage> {
                             style: TextStyle(fontSize: 18),
                           )))
                       : Expanded(
-                    child: StreamBuilder<List<Ahorro>>(
+                    child: StreamBuilder<List<Usuario>>(
                       stream: leerAmigos(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
@@ -166,7 +165,7 @@ class _GruposPageState extends State<GruposPage> {
     );
   }
 
-  Widget buildUser(Ahorro usuario) {
+  Widget buildUser(Usuario usuario) {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25),
         child: Stack(children: [
@@ -195,54 +194,17 @@ class _GruposPageState extends State<GruposPage> {
               });
             },
           ),
-          /*Positioned(
-              top: 25,
-              right: 20,
-              child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isChecked = !isChecked;
-                      print(selectedIndex);
-                    });
-                    if(isChecked == true){
-                      obtenerUsuario(usuario);
-                      numero.add(index.toString());
-                      selectedIndex=index;
-                      print(numero.toString());
-                    }else if (isChecked == false){
-                      setState(() {
-                        quitarUsuarioLista(usuario);
-                        numero.removeLast();
-                        selectedIndex=-1;
-                        print(numero.toString());
-                      });
-                    }
-
-                  },
-                  child: Container(
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: selectedIndex==index? Colors.white : Colors.transparent,
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(
-                        color: selectedIndex==index? Colors.transparent : Colors.white
-                      )
-                    ),
-                    child: Icon(Icons.check,color: selectedIndex==index? Colors.black : Colors.transparent,size: 18,),
-                  )
-              )),*/
         ]));
   }
 
-  obtenerUsuario(Ahorro usuario){
+  obtenerUsuario(Usuario usuario){
     usuariosGrupo.add(usuario);
     setState(() {
       print(usuariosGrupo.toString());
     });
     return usuario;
   }
-  quitarUsuarioLista(Ahorro usuario){
+  quitarUsuarioLista(Usuario usuario){
     usuariosGrupo.removeWhere((element) => element.id==usuario.id);
     setState(() {
       print(usuariosGrupo.toString());

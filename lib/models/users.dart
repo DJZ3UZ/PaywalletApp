@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Ahorro {
+class Usuario {
   String id;
   final String nombre;
   final String apellido;
@@ -8,7 +8,7 @@ class Ahorro {
   final String email;
   final String imagen;
 
-  Ahorro(
+  Usuario(
       {this.id = '',
       required this.nombre,
       required this.apellido,
@@ -26,7 +26,7 @@ class Ahorro {
     'imagen':imagen
   };
 
-  static Ahorro fromJson(Map<String, dynamic> json)=>Ahorro(
+  static Usuario fromJson(Map<String, dynamic> json)=>Usuario(
       id: json['id'],
       nombre: json['nombre'],
       apellido: json['apellido'],
@@ -35,12 +35,12 @@ class Ahorro {
     imagen: json['imagen']
   );
 
-  factory Ahorro.fromFirestore(
+  factory Usuario.fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> snapshot,
       SnapshotOptions? options,
       ) {
     final data = snapshot.data();
-    return Ahorro(
+    return Usuario(
       id: data?['id'],
       nombre: data?['nombre'],
       apellido: data?['apellido'],

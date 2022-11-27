@@ -33,12 +33,12 @@ class _SolicitudesPageState extends State<SolicitudesPage> {
   }
 
   //Para leer todos los usuarios
-  Stream<List<Ahorro>> leerSolicitudes() => solisRef
+  Stream<List<Usuario>> leerSolicitudes() => solisRef
       .doc(uid)
       .collection('solicitado')
       .snapshots()
       .map((snapshot) =>
-          snapshot.docs.map((doc) => Ahorro.fromJson(doc.data())).toList());
+          snapshot.docs.map((doc) => Usuario.fromJson(doc.data())).toList());
 
   @override
   void initState() {
@@ -101,7 +101,7 @@ class _SolicitudesPageState extends State<SolicitudesPage> {
                     style: TextStyle(fontSize: 18),
                   )))
                 : Expanded(
-                    child: StreamBuilder<List<Ahorro>>(
+                    child: StreamBuilder<List<Usuario>>(
                       stream: leerSolicitudes(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
@@ -123,7 +123,7 @@ class _SolicitudesPageState extends State<SolicitudesPage> {
     );
   }
 
-  Widget buildUser(Ahorro usuario) {
+  Widget buildUser(Usuario usuario) {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Stack(children: [
@@ -151,13 +151,13 @@ class _SolicitudesPageState extends State<SolicitudesPage> {
               child:
               GestureDetector(
                   onTap: () async {
-                    Ahorro currentUsuario = Ahorro(nombre: "", apellido: "", usuario: "", email: "");
+                    Usuario currentUsuario = Usuario(nombre: "", apellido: "", usuario: "", email: "");
                     final docUser = FirebaseFirestore.instance.collection('usuarios/').doc(uid);
                     final snapshot = await docUser.get();
                     if (snapshot.exists) {
-                      currentUsuario = Ahorro.fromJson(snapshot.data()!);
+                      currentUsuario = Usuario.fromJson(snapshot.data()!);
                     }
-                    aceptarAmistad(Ahorro currentUsuario){
+                    aceptarAmistad(Usuario currentUsuario){
                       amigosRef.doc(uid).collection('agregado').doc(usuario.id).set(
                           {
                             "id": usuario.id,

@@ -24,12 +24,12 @@ class _Cuenta extends State<Cuenta> {
   final Storage storage = Storage();
 
   //Para leer solo mi usuario
-  Future<Ahorro?> leerUsuario() async {
+  Future<Usuario?> leerUsuario() async {
     //Get document by ID
     final docUser = FirebaseFirestore.instance.collection('usuarios/').doc(uid);
     final snapshot = await docUser.get();
     if (snapshot.exists) {
-      return Ahorro.fromJson(snapshot.data()!);
+      return Usuario.fromJson(snapshot.data()!);
     }
   }
 
@@ -47,8 +47,8 @@ class _Cuenta extends State<Cuenta> {
         .collection('usuarios/')
         .doc(uid)
         .withConverter(
-            fromFirestore: Ahorro.fromFirestore,
-            toFirestore: (Ahorro user, _) => user.toFirestore());
+            fromFirestore: Usuario.fromFirestore,
+            toFirestore: (Usuario user, _) => user.toFirestore());
     final snapshot = await docUser.get();
     Reference ref =
         FirebaseStorage.instance.ref(user.uid).child('fotoperfil.jpg');
@@ -72,8 +72,8 @@ class _Cuenta extends State<Cuenta> {
         .collection('usuarios/')
         .doc(uid)
         .withConverter(
-            fromFirestore: Ahorro.fromFirestore,
-            toFirestore: (Ahorro user, _) => user.toFirestore());
+            fromFirestore: Usuario.fromFirestore,
+            toFirestore: (Usuario user, _) => user.toFirestore());
     final snapshot = await docUser.get();
     Reference ref =
         FirebaseStorage.instance.ref(user.uid).child('fotoperfil.jpg');
@@ -106,19 +106,6 @@ class _Cuenta extends State<Cuenta> {
     actualizarImagen();
     super.initState();
   }
-
-  /*// document IDs
-  List<String> docIDs = [];
-
-  // get docIDs
-  Future getDocId() async {
-    await FirebaseFirestore.instance.collection('usuarios').get().then(
-            (snapshot) =>
-            snapshot.docs.forEach((document) {
-              print(document.reference);
-              docIDs.add(document.reference.id);
-            }));
-  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -229,7 +216,7 @@ class _Cuenta extends State<Cuenta> {
                       child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25),
                     //Para leer solo mi usuario
-                    child: FutureBuilder<Ahorro?>(
+                    child: FutureBuilder<Usuario?>(
                         future: leerUsuario(),
                         builder: (context, snapshot) {
                           if (snapshot.hasError) {
@@ -245,22 +232,6 @@ class _Cuenta extends State<Cuenta> {
                             );
                           }
                         }),
-                    //Para leer todos los usuarios
-                    /*child: StreamBuilder<List<Usuario>>(
-                          stream: leerUsuarios(),
-                          builder: (context, snapshot){
-                            if(snapshot.hasData){
-                              final users = snapshot.data!;
-                              return ListView(
-                                children: users.map(buildUsuario).toList(),
-                              );
-                            } else{
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-                          },
-                        ),*/
                   )),
                   SizedBox(height: 40),
                   Row(
@@ -387,9 +358,10 @@ class _Cuenta extends State<Cuenta> {
                               },
                               child: Text('Eliminar')),
                         ),
-                      )
+                      ),
                     ],
                   ),
+                  SizedBox(height: 80,)
                 ],
               ),
             ),
@@ -397,7 +369,7 @@ class _Cuenta extends State<Cuenta> {
         ));
   }
 
-  Widget buildUsuario(Ahorro user) => Center(
+  Widget buildUsuario(Usuario user) => Center(
         child: Column(
           children: [
             SizedBox(height: 50),
@@ -441,7 +413,7 @@ class _Cuenta extends State<Cuenta> {
                 children: [
                   Text('Email:'),
                   Container(
-                    width: 250,
+                    width: 200,
                     child: TextFormField(
                       initialValue: user.email,
                       decoration: InputDecoration(
@@ -459,7 +431,7 @@ class _Cuenta extends State<Cuenta> {
         ),
       );
 
-  Widget Campo(Ahorro user, String tipo, campoController) {
+  Widget Campo(Usuario user, String tipo, campoController) {
     String nombre = user.nombre;
     String apellido = user.apellido;
     String usuario = user.usuario;
@@ -486,7 +458,7 @@ class _Cuenta extends State<Cuenta> {
         break;
     }
     return Container(
-      width: 250,
+      width: 200,
       child: TextFormField(
         controller: campoController,
         decoration: InputDecoration(

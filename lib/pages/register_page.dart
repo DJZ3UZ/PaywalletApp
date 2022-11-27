@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:paywallet_app/models/models.dart';
-import 'package:paywallet_app/pages/home_page.dart';
 
 class RegisterPage extends StatefulWidget {
   final VoidCallback mostrarLoginPage;
@@ -45,18 +44,13 @@ class _RegisterPageState extends State<RegisterPage> {
         password: _passwordcontroller.text.trim(),
       );
       //Agregar datos del usuario
-      final user = Ahorro(
+      final user = Usuario(
         nombre: _nombrecontroller.text.trim(),
         apellido: _apellidocontroller.text.trim(),
         usuario: _usuariocontroller.text.trim(),
         email: _emailcontroller.text.trim()
       );
       crearUsuario(user);
-      /*agregarDatosUsuario(
-          _nombrecontroller.text.trim(),
-          _apellidocontroller.text.trim(),
-          _usuariocontroller.text.trim(),
-          _emailcontroller.text.trim());*/
     } else {
       var snackBarIncorrecto = SnackBar(
         content: Text('Ingrese sus datos correctamente'),
@@ -66,25 +60,13 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  Future crearUsuario(Ahorro user) async{
+  Future crearUsuario(Usuario user) async{
     final uid = FirebaseAuth.instance.currentUser!.uid.toString();
     final docUser = FirebaseFirestore.instance.collection('usuarios').doc(uid);
     user.id=docUser.id;
     final json = user.toJson();
     await docUser.set(json);
   }
-
-  /*Future agregarDatosUsuario(
-      String nombre, String apellido, String usuario, String email) async {
-    final docUser = FirebaseFirestore.instance.collection('usuarios').doc(usuario);
-    final datos = {
-      'nombre': nombre,
-      'apellido': apellido,
-      'usuario': usuario,
-      'email': email,
-    };
-    await docUser.set(datos);
-  }*/
 
   bool passwordConfirmada() {
     if (_passwordcontroller.text.trim() ==

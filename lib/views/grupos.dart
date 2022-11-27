@@ -24,17 +24,13 @@ class _GruposState extends State<Grupos> {
         .collection('miembros')
         .get()
         .then((snapshot) => snapshot.docs.forEach((document) {
-      print(document.reference);
       grupIDs.add(document.reference.id);
-      setState(() {
-        print(grupIDs.toString());
-      });
     }));
   }
 
-  Stream<List<Ahorro>> leerGrupos() =>
+  Stream<List<Usuario>> leerGrupos() =>
       gruposRef.doc(uid).collection('miembros').snapshots().map((snapshot) =>
-          snapshot.docs.map((doc) => Ahorro.fromJson(doc.data())).toList());
+          snapshot.docs.map((doc) => Usuario.fromJson(doc.data())).toList());
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +80,7 @@ class _GruposState extends State<Grupos> {
                                     style: TextStyle(fontSize: 18),
                                   )))
                               : Expanded(
-                            child: StreamBuilder<List<Ahorro>>(
+                            child: StreamBuilder<List<Usuario>>(
                               stream: leerGrupos(),
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
@@ -108,7 +104,7 @@ class _GruposState extends State<Grupos> {
     );
   }
 
-  Widget buildUser(Ahorro usuario) {
+  Widget buildUser(Usuario usuario) {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Stack(children: [

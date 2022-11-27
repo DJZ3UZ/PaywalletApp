@@ -26,11 +26,7 @@ class _AmigosState extends State<Amigos> {
         .collection('solicitado')
         .get()
         .then((snapshot) => snapshot.docs.forEach((document) {
-              print(document.reference);
               solIDs.add(document.reference.id);
-              setState(() {
-                print(solIDs);
-              });
             }));
   }
 
@@ -40,17 +36,13 @@ class _AmigosState extends State<Amigos> {
         .collection('agregado')
         .get()
         .then((snapshot) => snapshot.docs.forEach((document) {
-              print(document.reference);
               friendIDs.add(document.reference.id);
-              setState(() {
-                print(friendIDs.toString());
-              });
             }));
   }
 
-  Stream<List<Ahorro>> leerAmigos() =>
+  Stream<List<Usuario>> leerAmigos() =>
       amigosRef.doc(uid).collection('agregado').snapshots().map((snapshot) =>
-          snapshot.docs.map((doc) => Ahorro.fromJson(doc.data())).toList());
+          snapshot.docs.map((doc) => Usuario.fromJson(doc.data())).toList());
 
   @override
   void initState() {
@@ -122,7 +114,7 @@ class _AmigosState extends State<Amigos> {
                         style: TextStyle(fontSize: 18),
                       )))
                     : Expanded(
-                        child: StreamBuilder<List<Ahorro>>(
+                        child: StreamBuilder<List<Usuario>>(
                           stream: leerAmigos(),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
@@ -144,7 +136,7 @@ class _AmigosState extends State<Amigos> {
         ));
   }
 
-  Widget buildUser(Ahorro usuario) {
+  Widget buildUser(Usuario usuario) {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Stack(children: [
